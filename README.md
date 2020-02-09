@@ -72,7 +72,7 @@ TypeScript >= 3.7.4
 
 ### Installing
 ```
-npm i -s TypedQL
+npm i -s typedql
 ```
 
 ## Usage

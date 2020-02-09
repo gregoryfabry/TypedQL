@@ -1,6 +1,6 @@
 {
   "name": "typedql",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "a graph query builder and resolver library written in TypeScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -4,5 +4,5 @@ export { Resolver } from './types/Resolvers';
 export { Result } from './types/Result';
 
 export { createResolver } from './createResolver';
-export { buildQuery as queryBuilder } from './queryBuilder';
+export { buildQuery } from './queryBuilder';
 export { resolve } from './resolve';

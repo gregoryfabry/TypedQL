@@ -83,7 +83,7 @@ TypedQL builds queries against an API defined using only TypeScript types. With 
 
 1. API types are defined in a way such that they can be imported by both client and server code.
 2. The server uses `createResolver` to create a `Resolver<Type>` for each type in the API.
-3. The client uses the `queryBuilder` to construct a serializable query against the API.
+3. The client uses `buildQuery` to construct a serializable query against the API.
 4. The client serializes the query and sends it as a request to the server.
 5. The server deserializes the query and `resolve`s it with the corresponding resolver.
 6. The server serializes the result and sends it as the response to the client.

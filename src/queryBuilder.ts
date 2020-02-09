@@ -51,4 +51,4 @@ const subqueryBuilder: SubqueryBuilder<any> = ($key, ...args) => {
   return nestedWrappedQueryBuilderFactory($key, args, []);
 }
 
-export { buildQuery as queryBuilder };
+export { buildQuery };

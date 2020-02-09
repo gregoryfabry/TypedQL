@@ -1,0 +1,19 @@
+{
+  "name": "typedql",
+  "version": "0.0.1",
+  "description": "a graph query builder and resolver library written in TypeScript",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git-codecommit.us-east-1.amazonaws.com/v1/repos/TypedQL"
+  },
+  "author": "Gregory Laszlo Fabry",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^3.7.4"
+  }
+}

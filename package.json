@@ -9,11 +9,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://git-codecommit.us-east-1.amazonaws.com/v1/repos/TypedQL"
+    "url": "https://github.com/gregoryfabry/TypedQL"
   },
   "author": "Gregory Laszlo Fabry",
   "license": "MIT",
-  "devDependencies": {
+  "peerDependencies": {
     "typescript": "^3.7.4"
   }
 }

@@ -10,7 +10,7 @@ const buildQuery = (metadata) => (callback) => {
         subqueries: subqueries.map(s => (Object.assign({}, s)))
     };
 };
-exports.queryBuilder = buildQuery;
+exports.buildQuery = buildQuery;
 const subqueryBuilder = ($key, ...args) => {
     const nestedWrappedQueryBuilderFactory = ($key, args, returnQueries) => {
         const nestedWrappedQueryBuilder = (matchOrCallback, _callback) => {

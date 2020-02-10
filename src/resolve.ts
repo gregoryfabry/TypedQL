@@ -3,16 +3,16 @@ import { Query, Subquery } from "./types/Query";
 import { Resolver, PartiallyAppliedResolver } from "./types/Resolvers";
 import { Result } from "./types/Result";
 
-const resolve: Resolve = <Q extends Query<any, any>>(query: Q, resolverFactory: Resolver<any>) => {
+const resolve: Resolve = async <Q extends Query<any, any>>(query: Q, resolverFactory: Resolver<any>) => {
   const result = query.metadata ? { ...query.metadata } : {};
 
   return {
     ...result,
-    ...resolveInner(query, resolverFactory(result) as any)
+    ...(await resolveInner(query, resolverFactory(result) as any))
   }
 }
 
-const resolveInner: ResolveInner = <Q extends Query<any, any>>(query: Q, resolver: PartiallyAppliedResolver<any>) => {
+const resolveInner: ResolveInner = async <Q extends Query<any, any>>(query: Q, resolver: PartiallyAppliedResolver<any>) => {
   const subqueryMap = query.subqueries.reduce((acc, cur: Subquery<any, any, any>) => {
     return {
       ...acc,
@@ -20,7 +20,7 @@ const resolveInner: ResolveInner = <Q extends Query<any, any>>(query: Q, resolve
     }
   }, {});
 
-  const partialResult = resolver(query);
+  const partialResult = await resolver(query);
   const result: { [key: string]: any } = {};
 
   for (let prop in partialResult) {
@@ -29,7 +29,7 @@ const resolveInner: ResolveInner = <Q extends Query<any, any>>(query: Q, resolve
         const subquery = (subqueryMap[prop] as Subquery<any, any, any>);
         const subqueryResult = partialResult[prop](...subquery.args);
 
-        result[prop] = mapOverSubqueryResult(subqueryResult, subquery.returnQueries);
+        result[prop] = await mapOverSubqueryResult(subqueryResult, subquery.returnQueries);
       }
     } else {
       result[prop] = partialResult[prop];
@@ -39,9 +39,13 @@ const resolveInner: ResolveInner = <Q extends Query<any, any>>(query: Q, resolve
   return result as Result<Q>;
 }
 
-const mapOverSubqueryResult = (subqueryResult: PartiallyAppliedResolver<any> | (PartiallyAppliedResolver<any>)[], returnQueries: Query<any, any>[]): {} | {}[] => {
+const mapOverSubqueryResult = async (subqueryResult: PartiallyAppliedResolver<any> | (PartiallyAppliedResolver<any>)[], returnQueries: Query<any, any>[]): Promise<{} | {}[]> => {
   if (subqueryResult instanceof Array) {
-    return subqueryResult.map(sqr => mapOverSubqueryResult(sqr, returnQueries));
+    const mappedSubqueryResult = [];
+    for (let i = 0; i < subqueryResult.length; i++) {
+      mappedSubqueryResult.push(await mapOverSubqueryResult(subqueryResult[i], returnQueries));
+    }
+    return mappedSubqueryResult;
   }
 
   let resolvedResult = {
@@ -49,21 +53,22 @@ const mapOverSubqueryResult = (subqueryResult: PartiallyAppliedResolver<any> | (
   };
   const metadataResult = subqueryResult.metadata;
 
-  returnQueries.forEach(returnQuery => {
+  for (let i = 0; i < returnQueries.length; i++) {
+    const returnQuery = returnQueries[i];
+
     if (returnQuery.metadata) {
       for (let prop in returnQuery.metadata) {
         if (metadataResult[prop] !== returnQuery.metadata[prop]) {
-          return;
+          continue;
         }
       }
     }
 
     resolvedResult = {
       ...resolvedResult,
-      ...resolveInner(returnQuery, subqueryResult)
+      ...(await resolveInner(returnQuery, subqueryResult))
     }
-  });
-
+  }
 
   return resolvedResult;
 }
